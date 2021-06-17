@@ -1,8 +1,9 @@
-services:
+version: '3.4'
 
-    elife-data-hub-utils:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      image: elifesciences/elife-data-hub-utils:${IMAGE_TAG}
+services:
+  elife-data-hub-utils:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elifesciences/elife-data-hub-utils:${IMAGE_TAG}
     
