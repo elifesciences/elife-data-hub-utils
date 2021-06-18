@@ -27,6 +27,7 @@ venv-create:
 dev-install:
 	$(PIP) install --disable-pip-version-check -r requirements.build.txt
 	$(PIP) install --disable-pip-version-check -r requirements.dev.txt
+	$(PIP) install --disable-pip-version-check -r requirements.txt
 	$(PIP) install --disable-pip-version-check -e .
 
 dev-venv: venv-create dev-install
@@ -50,18 +51,18 @@ dev-test: dev-lint dev-pytest
 
 
 flake8:
-	$(DOCKER_COMPOSE) -m flake8 elife_data_hub_utils tests
+	$(DEV_RUN_PYTHON) -m flake8 elife_data_hub_utils tests
 
 pylint:
-	$(DOCKER_COMPOSE) -m pylint elife_data_hub_utils tests
+	$(DEV_RUN_PYTHON) -m pylint elife_data_hub_utils tests
 
 lint: flake8 pylint
 
 pytest:
-	$(DOCKER_COMPOSE) -m pytest -p no:cacheprovider $(ARGS)
+	$(DEV_RUN_PYTHON) -m pytest -p no:cacheprovider $(ARGS)
 
 watch:
-	$(DOCKER_COMPOSE) -m pytest_watch -- -p no:cacheprovider -p no:warnings $(ARGS)
+	$(DEV_RUN_PYTHON) -m pytest_watch -- -p no:cacheprovider -p no:warnings $(ARGS)
 
 test: lint pytest
 
