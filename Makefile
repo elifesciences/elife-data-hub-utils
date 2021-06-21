@@ -30,7 +30,12 @@ dev-install:
 	$(PIP) install --disable-pip-version-check -r requirements.txt
 	$(PIP) install --disable-pip-version-check -e .
 
-dev-venv: venv-create dev-install
+dev-nlp-model-download:
+	$(PYTHON) -m spacy download en_core_web_lg
+	$(PYTHON) -m spacy download en_core_web_md
+	$(PYTHON) -m spacy download en_core_web_sm
+
+dev-venv: venv-create dev-install dev-nlp-model-download
 
 
 dev-flake8:

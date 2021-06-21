@@ -10,9 +10,9 @@ from elife_data_hub_utils.keyword_extract.spacy_keyword import (
     get_normalized_span_text,
     is_conjunction_token,
     join_spans,
+    get_text_list,
     get_noun_chunk_for_noun_token,
     get_noun_chunks,
-    get_text_list,
     iter_split_noun_chunk_conjunctions,
     get_conjuction_noun_chunks,
     iter_individual_keyword_spans,
@@ -43,7 +43,6 @@ def _spacy_language_mock():
 
 
 class TestGetSpanWithoutApostrophe:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_remove_apostrophe(
             self, spacy_language_en: Language):
         assert get_span_without_apostrophe(spacy_language_en(
@@ -52,35 +51,30 @@ class TestGetSpanWithoutApostrophe:
 
 
 class TestGetNormalizedSpanText:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_convert_plural_to_singular(
             self, spacy_language_en: Language):
         assert get_normalized_span_text(spacy_language_en(
             "technologies"
         )) == 'technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_normalize_remove_apostrophe(
             self, spacy_language_en: Language):
         assert get_normalized_span_text(spacy_language_en(
             "Parkinson's"
         )) == 'parkinson'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_convert_single_token_to_lower_case(
             self, spacy_language_en: Language):
         assert get_normalized_span_text(spacy_language_en(
             "fMRI"
         )) == 'fmri'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_convert_multiple_token_span_to_lower_case(
             self, spacy_language_en: Language):
         assert get_normalized_span_text(spacy_language_en(
             "Advanced Technology"
         )) == 'advanced technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_use_lemma_if_norm_equals_text_case_insensitive(
             self, spacy_language_en: Language):
         assert get_normalized_span_text(spacy_language_en(
@@ -89,7 +83,6 @@ class TestGetNormalizedSpanText:
 
 
 class TestIsConjunctionToken:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_true_for_and_token_only(
             self, spacy_language_en: Language):
         assert [
@@ -99,7 +92,6 @@ class TestIsConjunctionToken:
 
 
 class TestJoinSpans:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_join_two_spans(
             self, spacy_language_en: Language):
         assert join_spans(
@@ -112,7 +104,6 @@ class TestJoinSpans:
 
 
 class TestGetNounChunkForNounToken:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_span_for_noun_token(
             self, spacy_language_en: Language):
         doc = spacy_language_en('using technology')
@@ -123,28 +114,24 @@ class TestGetNounChunkForNounToken:
 
 
 class TestGetNounChunks:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_simple_noun_chunk(
             self, spacy_language_en: Language):
         assert get_text_list(get_noun_chunks(spacy_language_en(
             'using technology'
         ))) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_two_noun_chunk_separated_by_and(
             self, spacy_language_en: Language):
         assert get_text_list(get_noun_chunks(spacy_language_en(
             'using technology and approach'
         ))) == ['technology', 'approach']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_two_noun_chunk_separated_by_comma_in_sentence(
             self, spacy_language_en: Language):
         assert get_text_list(get_noun_chunks(spacy_language_en(
             'using technology, approach'
         ))) == ['technology', 'approach']
 
-    @pytest.fixture(name="spacy_language_en_full", scope="session")
     @pytest.mark.slow
     def test_should_return_two_noun_chunk_separated_by_comma_no_sentence(
             self, spacy_language_en_full: Language):
@@ -154,7 +141,6 @@ class TestGetNounChunks:
 
 
 class TestIterSplitNounChunkConjunctions:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_split_noun_chunk_without_conjunctions(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_split_noun_chunk_conjunctions(
@@ -162,7 +148,6 @@ class TestIterSplitNounChunkConjunctions:
             language=spacy_language_en
         )] == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_split_and_join_noun_chunk_on_conjunction(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_split_noun_chunk_conjunctions(
@@ -170,7 +155,6 @@ class TestIterSplitNounChunkConjunctions:
             language=spacy_language_en
         )] == ['advanced technology', 'special technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_split_hyphenated_noun_chunk_on_conjunction(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_split_noun_chunk_conjunctions(
@@ -180,7 +164,6 @@ class TestIterSplitNounChunkConjunctions:
 
 
 class TestGetConjuctionNounChunks:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_split_noun_chunk_without_conjunctions(
             self, spacy_language_en: Language):
         assert [span.text for span in get_conjuction_noun_chunks(
@@ -188,7 +171,6 @@ class TestGetConjuctionNounChunks:
             language=spacy_language_en
         )] == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_split_and_join_noun_chunk_on_conjunction_without_comma(
             self, spacy_language_en: Language):
         assert [span.text for span in get_conjuction_noun_chunks(
@@ -196,7 +178,6 @@ class TestGetConjuctionNounChunks:
             language=spacy_language_en
         )] == ['advanced technology', 'special technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_split_and_join_noun_chunk_on_conjunction_with_comma(
             self, spacy_language_en: Language):
         assert {span.text for span in get_conjuction_noun_chunks(
@@ -204,7 +185,6 @@ class TestGetConjuctionNounChunks:
             language=spacy_language_en
         )} == {'advanced technology', 'special technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_two_noun_chunk_separated_by_comma_no_sentence(
             self, spacy_language_en: Language):
         assert {span.text for span in get_conjuction_noun_chunks(
@@ -214,7 +194,6 @@ class TestGetConjuctionNounChunks:
 
 
 class TestIterIndividualKeywordSpans:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_no_results_if_keyword_is_not_compound(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_individual_keyword_spans(
@@ -222,7 +201,6 @@ class TestIterIndividualKeywordSpans:
             language=spacy_language_en
         )] == []
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_individual_words_from_compound_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_individual_keyword_spans(
@@ -230,7 +208,6 @@ class TestIterIndividualKeywordSpans:
             language=spacy_language_en
         )] == ['advanced', 'technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_only_return_individual_words_from_larger_compound_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_individual_keyword_spans(
@@ -238,7 +215,6 @@ class TestIterIndividualKeywordSpans:
             language=spacy_language_en
         )] == ['very', 'advanced', 'technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_ignore_single_word_words(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_individual_keyword_spans(
@@ -246,7 +222,6 @@ class TestIterIndividualKeywordSpans:
             language=spacy_language_en
         )] == ['strain']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_split_hyphenated_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_individual_keyword_spans(
@@ -256,7 +231,6 @@ class TestIterIndividualKeywordSpans:
 
 
 class TestIterShorterKeywordSpans:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_no_results_if_keyword_is_not_compound(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_shorter_keyword_spans(
@@ -264,7 +238,6 @@ class TestIterShorterKeywordSpans:
             language=spacy_language_en
         )] == []
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_no_results_for_two_word_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_shorter_keyword_spans(
@@ -272,7 +245,6 @@ class TestIterShorterKeywordSpans:
             language=spacy_language_en
         )] == []
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_last_two_words_for_three_word_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_shorter_keyword_spans(
@@ -280,7 +252,6 @@ class TestIterShorterKeywordSpans:
             language=spacy_language_en
         )] == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_return_last_three_and_two_words_for_four_word_keyword(
             self, spacy_language_en: Language):
         assert [span.text for span in iter_shorter_keyword_spans(
@@ -290,42 +261,36 @@ class TestIterShorterKeywordSpans:
 
 
 class TestLstripStopWordsAndPunct:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_leading_stop_words(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
             'the advanced technology'
         )).text == 'advanced technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_strip_non_stop_words(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
             'advanced technology'
         )).text == 'advanced technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_comma(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
             ', advanced technology'
         )).text == 'advanced technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_brackets(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
             '(1) advanced technology'
         )).text == 'advanced technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_strip_apostrophe(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
             "Pakinsons's disease"
         )).text == "Pakinsons's disease"
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_strip_hyphen_i(
             self, spacy_language_en: Language):
         # "I" is considered a stop word but that is not what is meant here
@@ -333,7 +298,6 @@ class TestLstripStopWordsAndPunct:
             "MHC-I molecule"
         )).text == "MHC-I molecule"
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_strip_stop_word_within_hyphenated_keyword(
             self, spacy_language_en: Language):
         # "and" is considered a stop word but we don't want to
@@ -342,7 +306,6 @@ class TestLstripStopWordsAndPunct:
             "simple-and-advanced technology"
         )).text == "simple-and-advanced technology"
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_eg(
             self, spacy_language_en: Language):
         assert lstrip_stop_words_and_punct(spacy_language_en(
@@ -351,14 +314,12 @@ class TestLstripStopWordsAndPunct:
 
 
 class TestRstripPunct:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_leading_stop_words(
             self, spacy_language_en: Language):
         assert strip_stop_words_and_punct(spacy_language_en(
             'the technology'
         )).text == 'technology'
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_tailing_closing_bracket(
             self, spacy_language_en: Language):
         assert rstrip_punct(spacy_language_en(
@@ -367,7 +328,6 @@ class TestRstripPunct:
 
 
 class TestStripStopWordsAndPunct:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_tailing_closing_bracket(
             self, spacy_language_en: Language):
         assert rstrip_punct(spacy_language_en(
@@ -390,42 +350,36 @@ class TestNormalizeText:
 
 
 class TestSpacyExclusion:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_match_different_word(
             self, spacy_language_en: Language):
         assert not SpacyExclusion({'interest'}).should_exclude(
             spacy_language_en('technology')
         )
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_match_exact_word(
             self, spacy_language_en: Language):
         assert SpacyExclusion({'interest'}).should_exclude(
             spacy_language_en('interest')
         )
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_match_last_word(
             self, spacy_language_en: Language):
         assert SpacyExclusion({'interest'}).should_exclude(
             spacy_language_en('research interest')
         )
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_match_normalized_word(
             self, spacy_language_en: Language):
         assert SpacyExclusion({'technology'}).should_exclude(
             spacy_language_en('technologies')
         )
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_if_word_length_below_minimum(
             self, spacy_language_en: Language):
         assert SpacyExclusion(min_word_length=3).should_exclude(
             spacy_language_en('xy')
         )
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_not_exclude_if_word_length_at_minimum(
             self, spacy_language_en: Language):
         assert not SpacyExclusion(min_word_length=2).should_exclude(
@@ -434,7 +388,6 @@ class TestSpacyExclusion:
 
 
 class TestSpacyKeywordList:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_individual_tokens_from_single_keyword_span(
             self, spacy_language_en: Language):
         assert set(
@@ -448,7 +401,6 @@ class TestSpacyKeywordList:
             .text_list
         ) == {'advanced technology', 'advanced', 'technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_individual_tokens_from_multiple_keyword_spans(
             self, spacy_language_en: Language):
         assert set(
@@ -470,7 +422,6 @@ class TestSpacyKeywordList:
             'approach'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_shorter_keywords_from_single_keyword_span(
             self, spacy_language_en: Language):
         assert set(
@@ -484,7 +435,6 @@ class TestSpacyKeywordList:
             .text_list
         ) == {'very advanced technology', 'advanced technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_shorter_keywords_from_multiple_keyword_spans(
             self, spacy_language_en: Language):
         assert set(
@@ -504,7 +454,6 @@ class TestSpacyKeywordList:
             'special approach'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_leading_stop_words(
             self, spacy_language_en: Language):
         assert (
@@ -518,7 +467,6 @@ class TestSpacyKeywordList:
             .text_list
         ) == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_keywords(
             self, spacy_language_en: Language):
         assert (
@@ -535,7 +483,6 @@ class TestSpacyKeywordList:
 
 
 class TestSpacyKeywordDocument:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_single_word_noun(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -544,7 +491,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_single_noun_with_adjective(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -555,7 +501,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_single_noun_with_hyphenated_adjective(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -566,7 +511,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == ['simple-and-advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_normalize_text(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -577,7 +521,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == ['advanced technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_individual_tokens(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert set(
@@ -589,7 +532,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == {'advanced technology', 'advanced', 'technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_short_keywords(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert set(
@@ -601,7 +543,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == {'very advanced technology', 'advanced technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_extract_individual_tokens_and_short_keywords(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert set(
@@ -617,7 +558,6 @@ class TestSpacyKeywordDocument:
             'very', 'advanced', 'technology'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     @pytest.mark.slow
     def test_should_extract_conjunction_nouns_with_adjective_with_comma(
             self,
@@ -633,7 +573,6 @@ class TestSpacyKeywordDocument:
             'advanced technique', 'advanced technology', 'special technology'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     @pytest.mark.slow
     def test_should_extract_conjunction_nouns_with_adjective_without_comma(
             self,
@@ -649,7 +588,6 @@ class TestSpacyKeywordDocument:
             'advanced technique', 'advanced technology', 'special technology'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     @pytest.mark.slow
     def test_should_not_combine_two_separate_nouns_with_conjunction(
             self,
@@ -665,7 +603,6 @@ class TestSpacyKeywordDocument:
             'technique', 'technology'
         }
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     @pytest.mark.slow
     def test_should_extract_multiple_keywords_separated_by_comma_as_list(
             self,
@@ -677,7 +614,6 @@ class TestSpacyKeywordDocument:
             .text_list
         ) == ['technology', 'approach']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_get_keyword_str_list_with_defaults(
             self,
             spacy_keyword_document_parser: SpacyKeywordDocumentParser):
@@ -686,7 +622,6 @@ class TestSpacyKeywordDocument:
         )
         assert document.get_keyword_str_list() == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_can_pass_exclusion_set_to_get_keyword_str_list(
             self,
             spacy_keyword_document_parser: SpacyKeywordDocumentParser):
@@ -697,7 +632,6 @@ class TestSpacyKeywordDocument:
             exclude=SpacyExclusion({'technology'})
         ) == []
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_numbers_from_individual_token_of_compound_keyword(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert set(
@@ -707,7 +641,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list(individual_tokens=True)
         ) == {'123 technology', 'technology'}
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_numbers(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -717,7 +650,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_number_of_years(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -727,7 +659,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_percentage(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -737,7 +668,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_greater_than_percentage(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -747,7 +677,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_pronouns(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -755,7 +684,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_person_name(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -765,7 +693,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['collaboration']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_exclude_country_name(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -775,7 +702,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list()
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_convert_plural_to_singular_keyword(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -785,7 +711,6 @@ class TestSpacyKeywordDocument:
             .get_keyword_str_list(normalize_text=True)
         ) == ['technology']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_normalize_keyword_spelling(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
@@ -798,7 +723,6 @@ class TestSpacyKeywordDocument:
 
 
 class TestSpacyKeywordDocumentParser:
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_parse_multiple_documents(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert [
@@ -809,7 +733,6 @@ class TestSpacyKeywordDocumentParser:
             )
         ] == ['using technology', 'using approach']
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_call_language_pipe(
             self, spacy_language_mock: MagicMock):
         text_list = ['using technology', 'using approach']
@@ -818,7 +741,6 @@ class TestSpacyKeywordDocumentParser:
         ).iter_parse_text_list(text_list))
         spacy_language_mock.pipe.assert_called()
 
-    @pytest.fixture(name="spacy_language_en", scope="session")
     def test_should_strip_tags(
             self, spacy_keyword_document_parser: SpacyKeywordDocumentParser):
         assert (
