@@ -5,14 +5,18 @@ from setuptools import (
     setup
 )
 
+with open(os.path.join('requirements.txt'), 'r') as f:
+    REQUIRED_PACKAGES = f.readlines()
 
-packages = [x for x in find_packages()
+PACKAGES = find_packages()
+
+PACKAGES = [x for x in PACKAGES
             if x not in {'tests'}]
 
 setup(
     name='elife_data_hub_utils',
     version='0.0.1',
-    install_requires=[],
-    packages=packages,
+    install_requires=REQUIRED_PACKAGES,
+    packages=PACKAGES,
     description='Elife Data Hub Utils',
 )
