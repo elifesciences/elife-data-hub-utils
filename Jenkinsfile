@@ -9,7 +9,9 @@ elifePipeline {
 
         stage 'Build and run tests', {
             try {
-                sh "make IMAGE_TAG=${commit} ci-build-and-test"
+                timeout(time: 30, unit: 'MINUTES') {
+                    sh "make IMAGE_TAG=${commit} ci-build-and-test"
+                }
             } finally {
                 sh "make ci-clean"
             }
