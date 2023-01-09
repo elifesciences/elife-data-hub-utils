@@ -4,5 +4,4 @@ disable=
     too-few-public-methods,
     too-many-arguments,
     too-many-public-methods,
-    no-self-use,
     unused-import
